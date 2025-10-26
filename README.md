@@ -1,10 +1,6 @@
 
 ************************************************************************************************************************************************************************************************************
 Credit Risk Modeling App
-************************************************************************************************************************************************************************************************************
-URL : https://credit-risk-modeling-by-saket.streamlit.app/
-
-This project is a Streamlit-based web application that predicts an individual's credit risk by estimating their default probability, credit score, and providing a rating (Poor, Average, Good, Excellent). It uses a trained machine learning model built on financial and credit data to assist financial institutions in decision-making.
 
 ************************************************************************************************************************************************************************************************************
 Features
@@ -14,8 +10,6 @@ Features
     Calculate an estimated credit score on a 300–900 scale.
 
     Classify users into credit rating categories: Poor, Average, Good, Excellent.
-
-    Interactive UI for entering applicant details.
 
     Real-time model inference using pre-trained artifacts.
     
@@ -85,8 +79,6 @@ How It Works
 ************************************************************************************************************************************************************************************************************
 Dependencies
 
-    streamlit
-
     pandas
 
     numpy
@@ -99,15 +91,5 @@ Install them via:
 
 pip install -r requirements.txt
 
-************************************************************************************************************************************************************************************************************
-Running the App
-
-    Make sure you have Python installed.
-
-    Place model_data.joblib inside the ARTIFACTS/ directory.
-
-    Run the Streamlit app:
-
-streamlit run app.py
 
 ************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
