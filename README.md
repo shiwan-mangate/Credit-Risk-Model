@@ -1,95 +1,276 @@
+LOAN-DEFAULT-PREDICTOR
 
-************************************************************************************************************************************************************************************************************
-Credit Risk Modeling App
+💡 Loan Default Prediction System
+Predicting the probability of a customer defaulting on a loan using advanced machine learning and financial risk features.
 
-************************************************************************************************************************************************************************************************************
-Features
+🖼️ App Screenshot
 
-    Predict default probability of a borrower.
+(Add Streamlit / Web App screenshot here)
 
-    Calculate an estimated credit score on a 300–900 scale.
+🚀 Motivation
 
-    Classify users into credit rating categories: Poor, Average, Good, Excellent.
+Loan defaults significantly impact financial institutions and lending platforms.
+Accurate early prediction helps in:
 
-    Real-time model inference using pre-trained artifacts.
-    
-   ************************************************************************************************************************************************************************************************************
-Model Overview
+Reducing credit risk
 
-The backend model is a logistic regression classifier trained on credit-related features. It outputs the probability of loan default, which is then transformed into a credit score using a scoring formula.
-Inputs
+Improving loan approval decisions
 
-The model takes the following user inputs via the UI:
-Field	Description
-Age	Applicant's age (18–100)
-Income	Monthly income in INR
-Loan Amount	Loan amount requested
-Loan Tenure (Months)	Duration of the loan
-Delinquency Ratio (%)	% of accounts with late payments
-Avg DPD	Average Days Past Due on delinquent accounts
-Credit Utilization Ratio	% of credit limit currently utilized
-Open Loan Accounts	Number of active loan accounts
-Residence Type	Owned / Rented / Mortgage
-Loan Purpose	Education / Home / Auto / Personal
-Loan Type	Secured / Unsecured
+Reducing NPAs
 
-Derived Input:
+Enhancing portfolio quality
 
-    Loan to Income Ratio: Calculated as loan_amount / income
+This model leverages demographics, loan details, and credit bureau history to predict the likelihood of default using machine learning, minimizing manual evaluation errors.
 
-Outputs
+📂 Dataset Information
 
-After submitting inputs, the model returns:
+The project uses three structured datasets merged through cust_id:
 
-    Default Probability: Estimated chance (in %) that the borrower will default.
+1. Customer Information
 
-    Credit Score: Score between 300 and 900.
+Age
 
-    Rating:
+Gender
 
-        300–499: Poor
+Marital_status
 
-        500–649: Average
+Employment_status
 
-        650–749: Good
+Income
 
-        750–900: Excellent
+Number_of_dependants
 
-************************************************************************************************************************************************************************************************************
-How It Works
+Residence_type
 
-    Input Transformation:
+Years_at_current_address
 
-        Inputs are converted into model features using a feature engineering pipeline (prepare_input()).
+Location (City, State, Zipcode)
 
-        Dummy variables and additional placeholders are filled to match the training format.
+2. Loan Details
 
-    Scaling:
+Loan_id
 
-        Features are normalized using a MinMaxScaler that was saved during training.
+Loan_purpose
 
-    Prediction:
+Loan_type
 
-        The logistic regression model returns a default probability.
+Sanction_amount
 
-        The probability is mapped to a credit score using:
+Loan_amount
 
-        score = base_score + non_default_prob * scale_length
+Processing_fee
 
-************************************************************************************************************************************************************************************************************
-Dependencies
+GST
 
-    pandas
+Net_disbursement
 
-    numpy
+Loan_tenure_months
 
-    scikit-learn
+Principal_outstanding
 
-    joblib
+Bank_balance_at_application
 
-Install them via:
+Disbursal_date
 
-pip install -r requirements.txt
+Installment_start_dt
+
+Default (Target Variable)
+
+3. Credit Bureau Data
+
+Number_of_open_accounts
+
+Number_of_closed_accounts
+
+Total_loan_months
+
+Delinquent_months
+
+Total_dpd
+
+Enquiry_count
+
+Credit_utilization_ratio
+
+➕ Engineered Features
+
+To enhance predictive power, the following features were created:
+
+Feature Name	Description
+loan_to_income	Captures repayment burden relative to income.
+delinquency_ratio	% of months where customer was delinquent.
+avg_dpd_per_delinquency	Average DPD per delinquent month.
+🛠️ Tech Stack & Tools
+
+Python
+
+NumPy, Pandas
+
+Matplotlib, Seaborn
+
+Scikit-learn
+
+Imbalanced-Learn (SMOTETomek)
+
+XGBoost
+
+Optuna
+
+Joblib
+
+Streamlit (optional for UI)
+
+🧹 Data Preprocessing & Feature Engineering
+
+A robust preprocessing pipeline was designed to clean, transform, and prepare the dataset for ML modeling.
+
+✅ Key Steps in Preprocessing
+1. Handling Outliers
+
+Outliers in financial variables can mislead the model.
+
+Example:
+Processing Fee vs Loan Amount Ratio
+Values above 3% were removed:
+
+df = df[(df['processing_fee'] / df['loan_amount']) < 0.03]
+
+2. Encoding Categorical Features
+
+One-hot encoding was applied to:
+
+Loan_purpose
+
+Loan_type
+
+Residence_type
+
+Gender
+
+Employment_status
+
+3. Feature Engineering
+Feature Name	Description
+loan_to_income	Loan amount ÷ customer income
+delinquency_ratio	(Delinquent months ÷ total loan months) * 100
+avg_dpd_per_delinquency	Total DPD ÷ delinquent months
+loan_purpose_encoded	Encoded premium loan purpose types
+residence_type_encoded	Numerical representation for ML
+
+These features significantly improved model performance and credit-risk interpretability.
+
+4. Missing Value Treatment
+
+Residence_type missing values filled with mode: "Owned"
+
+No significant missing values in other fields
+
+5. Feature Scaling
+
+MinMax scaling applied to numerical variables:
+
+scaler = MinMaxScaler()
+X[cols_to_scale] = scaler.fit_transform(X[cols_to_scale])
+
+🤖 Models Tried
+
+Logistic Regression (Baseline)
+
+Logistic Regression + RandomizedSearchCV
+
+XGBoost Classifier
+
+Logistic Regression + SMOTETomek + Optuna (Final Model)
+
+✅ Final Model: Logistic Regression (Optimized with Optuna)
+
+After balancing the dataset using SMOTETomek, Optuna performed hyperparameter tuning.
+
+Best Parameters:
+
+{
+    'C': 1259.05,
+    'solver': 'newton-cg',
+    'tol': 0.0001239,
+    'class_weight': None
+}
 
 
-************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+This model achieved the best balance between:
+
+Recall for default class
+
+AUC
+
+Gini
+
+KS statistic
+
+Out-of-sample stability
+
+📈 Results
+✔ High Performance Metrics
+
+ROC AUC: ~0.98
+
+Gini Coefficient: ~0.96
+
+KS Statistic: ~85–86 (Excellent)
+
+Recall for Default Class: ~0.94
+
+The model is optimized to detect high-risk borrowers with strong discrimination capability.
+
+💾 Saved Model Artifact
+
+The final model is saved as:
+
+ARTIFACTS/model_data.joblib
+
+
+This file includes:
+
+Trained Logistic Regression model
+
+Feature list
+
+Scaler
+
+Columns requiring scaling
+
+🌐 Streamlit App
+
+(Add your deployed app link here)
+🔗 Loan Default Predictor Web App
+
+🖼️ App Screenshot
+
+(Insert Streamlit UI screenshot)
+
+🧠 Professional Use Case
+
+This ML system can be deployed in:
+
+🏦 Bank Loan Origination Systems
+📊 Credit Risk Assessment Dashboards
+📈 Portfolio Monitoring Tools
+👥 FinTech Loan Approval Engines
+🧮 NBFC / Microfinance credit evaluation
+
+🚧 Future Improvements
+
+Add SHAP-based model explainability
+
+Train on larger & cross-institution datasets
+
+Deploy via FastAPI
+
+Add customer-level dashboards
+
+Introduce scorecards (PD mapping)
+
+👨‍💻 Author
+
+Shiwan Mangate
+B.Tech in Artificial Intelligence
+NIT Rourkela
