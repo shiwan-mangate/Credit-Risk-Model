@@ -1,88 +1,95 @@
 # LOAN-DEFAULT-PREDICTOR
+
 💡 **Loan Default Prediction System**  
-Predicting the probability of a customer defaulting on a loan using advanced machine learning and financial risk features.
+A machine learning project designed to estimate the probability of a customer defaulting on a loan based on financial behaviour, credit history, and demographic information.
 
 ---
 
 ## 🖼️ App Screenshot
-*(Add Streamlit / Web App screenshot here)*
+![Loan Default Predictor App](https://github.com/shiwan-mangate/Credit-Risk-Model/blob/main/credit-risk-app.png)
 
 ---
 
 ## 🚀 Motivation
-Loan defaults significantly impact financial institutions and lending platforms. Accurate early prediction helps in:
+Banks and lending companies deal with a large number of loan applications every day. Identifying high-risk borrowers early can:
 
-- Reducing credit risk  
-- Improving loan approval decisions  
-- Reducing NPAs  
-- Enhancing portfolio quality  
+- Lower credit risk  
+- Improve approval decision efficiency  
+- Control non-performing assets (NPAs)  
+- Strengthen portfolio quality  
 
-This model leverages **demographics, loan details, and credit bureau history** to predict the likelihood of default using machine learning, reducing manual evaluation errors.
+This project focuses on building a prediction model that uses customer information, loan data, and historical credit activity to estimate the likelihood of default.
 
 ---
 
-## 📂 Dataset Information
+## 📂 Dataset Overview
 
-The project uses **three structured datasets** merged through `cust_id`:
+Three datasets were combined using `cust_id` as the key.
 
 ### 1️⃣ Customer Information
+Includes basic demographic and financial details:
 - Age  
 - Gender  
-- Marital_status  
-- Employment_status  
+- Marital status  
+- Employment status  
 - Income  
-- Number_of_dependants  
-- Residence_type  
-- Years_at_current_address  
-- City, State, Zipcode  
+- Number of dependants  
+- Residence type  
+- Years at current address  
+- City, state, and zipcode  
 
 ---
 
 ### 2️⃣ Loan Details
-- Loan_id  
-- Loan_purpose  
-- Loan_type  
-- Sanction_amount  
-- Loan_amount  
-- Processing_fee  
+Covers all loan-specific attributes:
+- Loan ID  
+- Loan purpose  
+- Loan type  
+- Sanction amount  
+- Loan amount  
+- Processing fee  
 - GST  
-- Net_disbursement  
-- Loan_tenure_months  
-- Principal_outstanding  
-- Bank_balance_at_application  
-- Disbursal_date  
-- Installment_start_dt  
-- **Default (Target Variable)**  
+- Net disbursement  
+- Tenure (in months)  
+- Principal outstanding  
+- Bank balance at application time  
+- Disbursal date  
+- Installment start date  
+- **Default status (Target variable)**  
 
 ---
 
 ### 3️⃣ Credit Bureau Data
-- Number_of_open_accounts  
-- Number_of_closed_accounts  
-- Total_loan_months  
-- Delinquent_months  
-- Total_dpd  
-- Enquiry_count  
-- Credit_utilization_ratio  
+Contains historical repayment and enquiry information:
+- Number of open accounts  
+- Number of closed accounts  
+- Total loan months  
+- Months delinquent  
+- Total DPD  
+- Number of enquiries  
+- Credit utilisation ratio  
 
 ---
 
-## ➕ Engineered Features
+## ➕ Feature Engineering
 
-| Feature Name               | Description |
-|----------------------------|-------------|
-| loan_to_income            | Captures repayment burden relative to income |
-| delinquency_ratio         | % of months where customer was delinquent |
-| avg_dpd_per_delinquency   | Average DPD per delinquent month |
+A few additional features were created to capture risk behaviour more effectively:
+
+| Feature | Description |
+|--------|-------------|
+| loan_to_income | Ratio of loan amount to income |
+| delinquency_ratio | Percentage of months with delinquency |
+| avg_dpd_per_delinquency | Average DPD per delinquent month |
 
 ---
 
-## 🛠️ Tech Stack & Tools
+## 🛠️ Tech Stack
+
 - Python  
-- NumPy, Pandas  
+- Pandas, NumPy  
 - Matplotlib, Seaborn  
 - Scikit-learn  
-- Imbalanced-Learn (SMOTETomek)  
+- Imbalanced-Learn  
 - XGBoost  
 - Optuna  
 - Joblib  
@@ -90,71 +97,63 @@ The project uses **three structured datasets** merged through `cust_id`:
 
 ---
 
-## 🧹 Data Preprocessing & Feature Engineering
+## 🧹 Data Preprocessing & Cleaning
 
-### 1️⃣ Handling Outliers
-Outliers in financial variables can mislead the model.
-
-Example rule applied:
+### 1️⃣ Outlier Treatment
+Some loan applications had unusually high processing fees. Records where:
 
 
----
-
-### 2️⃣ Encoding Categorical Features
-One-hot encoding was applied to:
-
-- Loan_purpose  
-- Loan_type  
-- Residence_type  
-- Gender  
-- Employment_status  
+were removed to avoid skewness.
 
 ---
 
-### 3️⃣ Feature Engineering
-
-| Feature Name               | Description |
-|----------------------------|-------------|
-| loan_to_income            | Loan amount ÷ customer income |
-| delinquency_ratio         | (Delinquent months ÷ total loan months) × 100 |
-| avg_dpd_per_delinquency   | Total DPD ÷ delinquent months |
-| loan_purpose_encoded      | Encoded loan purpose values |
-| residence_type_encoded    | Encoded residence type values |
-
-These features significantly improved model performance and credit-risk interpretability.
+### 2️⃣ Encoding Categorical Variables
+Categorical fields like loan purpose, loan type, residence type, gender, and employment status were converted into numerical form using one-hot encoding.
 
 ---
 
-### 4️⃣ Missing Value Treatment
-- Missing `Residence_type` values filled with: `"Owned"`  
-- No major missing values in other fields  
+### 3️⃣ Additional Feature Construction
+Several new variables were derived from existing attributes (listed above) to help the model better understand customer risk levels.
 
 ---
 
-## 🤖 Models Tried
-- Logistic Regression (Baseline)  
-- Logistic Regression + RandomizedSearchCV  
+### 4️⃣ Handling Missing Values
+- Missing entries in *Residence_type* were replaced with `"Owned"`.  
+- No major missing data issues were present in other columns.
+
+---
+
+## 🤖 Models Trained
+
+- Logistic Regression  
+- Logistic Regression with hyperparameter search  
 - XGBoost Classifier  
-- **Logistic Regression + SMOTETomek + Optuna (Final Model)**  
+- Logistic Regression combined with SMOTETomek balancing and Optuna tuning (final model)
 
 ---
 
-## 📈 Results – High Performance Metrics
+## 📈 Model Performance
+
+Key evaluation metrics on the test set:
+
 - **ROC AUC:** ~0.98  
 - **Gini Coefficient:** ~0.96  
-- **KS Statistic:** ~85–86 *(Excellent)*  
+- **KS Statistic:** ~85–86  
 - **Recall for Default Class:** ~0.94  
 
-The model is optimized to detect **high-risk borrowers** with strong discrimination capability.
+The final model was selected based on stability and its ability to detect high-risk borrowers effectively.
 
 ---
 
 ## 🌐 Streamlit App
-Try the live application here:
+
+The model is deployed as a simple web app here:
 
 🔗 **Loan Default Predictor Web App**  
-👉 https://credit-risk-model-bn4hq2sxdvkdndfyicdkyb.streamlit.app/
+https://credit-risk-model-bn4hq2sxdvkdndfyicdkyb.streamlit.app/
 
 ---
+
+
 
 
